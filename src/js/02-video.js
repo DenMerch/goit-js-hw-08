@@ -1,7 +1,7 @@
 import Player from "@vimeo/player";
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
-const throttle = require('lodash.throttle');
+import throttle from 'lodash.throttle';
 import { save, load } from "./localStorage.js";
 //додати лодаш
 
@@ -19,19 +19,18 @@ player.on("timeupdate", throttle(function (data) {
     save("videoplayer-current-time", JSON.stringify(time));
     // save("videoplayer-current-time", time)
 }, 1000))
-player.on('play', function () {
-    player.setCurrentTime(load("videoplayer-current-time")).then(function (seconds) {
-        // seconds = the actual time that the player seeked to
-    }).catch(function (error) {
-        switch (error.name) {
-            case 'RangeError':
-                // the time was less than 0 or greater than the video’s duration
-                break;
 
-            default:
-                // some other error occurred
-                break;
-        }
-    });
+player.setCurrentTime(load("videoplayer-current-time")).then(function (seconds) {
+    // seconds = the actual time that the player seeked to
+}).catch(function (error) {
+    switch (error.name) {
+        case 'RangeError':
+            // the time was less than 0 or greater than the video’s duration
+            break;
 
+        default:
+            // some other error occurred
+            break;
+    }
 });
+

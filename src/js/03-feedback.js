@@ -1,20 +1,31 @@
 import { save, load } from "./localStorage.js";
-const throttle = require('lodash.throttle');
+import throttle from 'lodash.throttle';
 const formEl = document.querySelector("form");
-formEl.addEventListener("submit", throttle(handleSubmit, 1000));
-function handleSubmit(event) {
+const formSubmit = {
+    email: "",
+    message: ""
+}
+
+formEl.addEventListener("input", throttle(handlInput, 300));
+
+
+function handlInput(event) {
     event.preventDefault();
-    const {
-        elements: { email, message }
-    } = event.currentTarget;
-    if (email.value === "" || message.value === "") {
-        return console.log("Please fill in all the fields!");
-    }
-    save("feedback-form-state", { email: email.value, message: message.value })
-    event.currentTarget.reset();
+    formSubmit.email = formEl.email.value;
+    formSubmit.message = formEl.message.value;
+    save("feedback-form-state", formSubmit)
+
 }
 if (load("feedback-form-state")) {
     formEl.email.value = load("feedback-form-state").email;
     formEl.message.value = load("feedback-form-state").message;
-
 } else { return }
+formEl.addEventListener("submit", handleSubmit);
+function handleSubmit(event) {
+    event.preventDefault();
+    formSubmit.email = formEl.email.value;
+    formSubmit.message = formEl.message.value;
+    console.log(formSubmit);
+    localStorage.clear();
+    event.currentTarget.reset();
+}
