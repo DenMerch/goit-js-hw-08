@@ -1,5 +1,6 @@
 import { save, load } from "./localStorage.js";
 import throttle from 'lodash.throttle';
+const STORAFE_KEY = 'feedback-form-state';
 const formEl = document.querySelector("form");
 const formSubmit = {
     email: "",
@@ -7,25 +8,25 @@ const formSubmit = {
 }
 
 formEl.addEventListener("input", throttle(handlInput, 300));
-
+formEl.addEventListener("submit", handleSubmit);
 
 function handlInput(event) {
     event.preventDefault();
     formSubmit.email = formEl.email.value;
     formSubmit.message = formEl.message.value;
-    save("feedback-form-state", formSubmit)
+    save(STORAFE_KEY, formSubmit)
 
 }
-if (load("feedback-form-state")) {
-    formEl.email.value = load("feedback-form-state").email;
-    formEl.message.value = load("feedback-form-state").message;
+if (load(STORAFE_KEY)) {
+    formEl.email.value = load(STORAFE_KEY).email;
+    formEl.message.value = load(STORAFE_KEY).message;
 } else { return }
-formEl.addEventListener("submit", handleSubmit);
+
 function handleSubmit(event) {
     event.preventDefault();
     formSubmit.email = formEl.email.value;
     formSubmit.message = formEl.message.value;
     console.log(formSubmit);
-    localStorage.removeItem("feedback-form-state");;
+    localStorage.removeItem(STORAFE_KEY);;
     event.currentTarget.reset();
 }
